@@ -5,15 +5,13 @@
     <title>벚꽃 소녀의 편지함</title>
     <style>
         body { margin: 0; background: #fff5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Apple SD Gothic Neo', sans-serif; overflow: hidden; }
-        
         .mailbox-container { position: relative; width: 100%; max-width: 500px; height: 80vh; display: flex; justify-content: center; align-items: center; }
         .mailbox-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
         
-        /* ✉️ 클릭 영역: 가장 위로 올려서 무조건 클릭되게 함 */
+        /* ✉️ 클릭 영역 (가장 위) */
         .click-area { 
             position: absolute; top: 31%; left: 28%; width: 130px; height: 90px; 
-            cursor: pointer; z-index: 100; /* 숫자를 높여서 편지보다 위에 두었습니다 */
-            /* background: rgba(255,0,0,0.2); // 위치 확인용 */
+            cursor: pointer; z-index: 100; 
         }
 
         .letter {
@@ -24,67 +22,91 @@
             transition: all 0.5s ease-in-out;
             opacity: 0; visibility: hidden; 
             transform: translate(-10%, -20%) scale(0.5);
-            pointer-events: none; /* 👈 편지가 클릭을 방해하지 못하게 설정 */
+            pointer-events: none;
         }
 
-        .letter.active { 
-            opacity: 1; visibility: visible; 
-            transform: translate(-10%, -40%) scale(1.6); 
-            z-index: 50; 
-        }
-
+        .letter.active { opacity: 1; visibility: visible; transform: translate(-10%, -40%) scale(1.6); z-index: 50; }
         .letter h3 { font-size: 15px; margin: 0 0 10px 0; color: #d6336c; border-bottom: 1px solid #ffdeeb; padding-bottom: 5px; }
         .letter p { font-size: 12px; line-height: 1.6; color: #444; word-break: keep-all; }
         .page-num { font-size: 10px; color: #aaa; position: absolute; bottom: 10px; right: 15px; }
 
         .cherry-blossom { position: absolute; background: #ffb7c5; border-radius: 50%; pointer-events: none; animation: fall linear forwards; }
         @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+        /* 유튜브 플레이어 숨기기 */
+        #youtube-player { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
 
+    <div id="youtube-player"></div>
+
     <div class="mailbox-container">
         <img src="image_10.png.png" class="mailbox-img" alt="벚꽃 소녀">
-        
         <div class="click-area" onclick="nextLetter()"></div>
 
         <div class="letter" id="letter0">
             <h3>From. 철수 🌸</h3>
-            <p>생일 축하해! 첫 번째 편지야.</p>
+            <p>생일 정말 축하해! 이 노래 너랑 참 잘 어울리는 것 같아서 골라봤어.</p>
             <div class="page-num">1 / 3</div>
         </div>
 
         <div class="letter" id="letter1">
             <h3>From. 영희 🎀</h3>
-            <p>두 번째 편지야! 우리 더 친하게 지내자.</p>
+            <p>오늘 하루는 네가 세상에서 가장 행복했으면 좋겠다! 맛있는 거 많이 먹어.</p>
             <div class="page-num">2 / 3</div>
         </div>
 
         <div class="letter" id="letter2">
             <h3>From. 민수 🎂</h3>
-            <p>마지막 편지! 세상에서 제일 행복한 하루 보내!</p>
+            <p>태어나줘서 고마워! 우리 앞으로도 예쁜 추억 많이 만들자. 사랑해!</p>
             <div class="page-num">3 / 3</div>
         </div>
     </div>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        let player;
+        let isVideoReady = false;
+
+        // 유튜브 플레이어 초기화
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '0',
+                width: '0',
+                videoId: 'clFIx8CFwD4', // 'Beautiful Day' 영상 ID 적용
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': 'clFIx8CFwD4'
+                },
+                events: {
+                    'onReady': function() { isVideoReady = true; }
+                }
+            });
+        }
+
         let currentIdx = -1;
         const totalLetters = 3;
 
         function nextLetter() {
-            // 1. 모든 편지에서 active 클래스 제거
+            // 첫 클릭 시 음악 재생
+            if (isVideoReady && currentIdx === -1) {
+                player.playVideo();
+            }
+
+            // 모든 편지 비활성화
             for(let i=0; i<totalLetters; i++) {
                 document.getElementById('letter' + i).classList.remove('active');
             }
 
-            // 2. 다음 번호 계산
+            // 다음 편지 활성화
             currentIdx = (currentIdx + 1) % totalLetters;
-
-            // 3. 해당 번호 편지만 활성화
             const activeLetter = document.getElementById('letter' + currentIdx);
             activeLetter.classList.add('active');
 
-            // 4. 벚꽃 효과
+            // 벚꽃 효과
             createPetals();
         }
 
