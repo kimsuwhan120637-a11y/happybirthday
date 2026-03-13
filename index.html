@@ -16,11 +16,10 @@
             position: relative;
         }
 
-        /* 메인 컨테이너 */
         .mailbox-container {
             position: relative;
             width: 100%;
-            max-width: 500px; /* 이미지 크기에 맞게 조절 */
+            max-width: 500px;
             height: 80vh;
             display: flex;
             justify-content: center;
@@ -28,7 +27,6 @@
             z-index: 10;
         }
 
-        /* 배경 이미지 (소녀와 우체통) */
         .mailbox-img {
             width: 100%;
             height: 100%;
@@ -36,16 +34,15 @@
             pointer-events: none;
         }
 
-        /* ✉️ 우체통 입구 클릭 영역 (POST 글자 부근으로 정밀 조정) */
+        /* ✉️ 우체통 입구 클릭 영역 */
         .click-area {
             position: absolute;
-            top: 31%; /* 위에서 31% 지점 */
-            left: 28%; /* 왼쪽에서 28% 지점 */
+            top: 31%; 
+            left: 28%;
             width: 130px;
             height: 90px;
             cursor: pointer;
             z-index: 20;
-            /* background: rgba(255,0,0,0.3); // 위치 확인이 필요하면 앞의 주석(/*)을 지우세요 */
         }
 
         /* 📜 편지지 스타일 */
@@ -59,7 +56,7 @@
             padding: 20px;
             box-shadow: 0 8px 25px rgba(214, 51, 108, 0.3);
             z-index: 5;
-            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1); /* 튕기는 듯한 효과 */
+            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 2px solid #ffdeeb;
             border-radius: 15px;
             overflow-y: auto;
@@ -71,7 +68,6 @@
         .letter h3 { font-size: 16px; margin: 0 0 15px 0; color: #d6336c; text-align: center; }
         .letter p { font-size: 13px; line-height: 1.7; margin: 0; color: #333; }
 
-        /* ✨ 클릭 시 편지가 나타나는 애니메이션 ✨ */
         .mailbox-container.open .letter {
             transform: translate(-10%, -40%) scale(1.8);
             opacity: 1;
@@ -79,7 +75,7 @@
             z-index: 30;
         }
 
-        /* 🌸 떨어지는 벚꽃 잎 */
+        /* 🌸 떨어지는 벚꽃 효과 */
         .cherry-blossom {
             position: absolute;
             background: #ffb7c5;
@@ -95,7 +91,6 @@
             100% { transform: translateY(110vh) rotate(360deg); }
         }
 
-        /* 바닥 꽃잎 효과 */
         .petals-on-ground {
             position: absolute;
             bottom: 0;
@@ -143,7 +138,6 @@
             container.classList.toggle('open');
             
             if(container.classList.contains('open')) {
-                // 꽃잎 효과 생성
                 for(let i=0; i<50; i++) {
                     setTimeout(createCherryBlossom, i * 120);
                 }
@@ -165,4 +159,3 @@
     </script>
 </body>
 </html>
-  
