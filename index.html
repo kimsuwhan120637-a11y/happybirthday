@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>벚꽃 소녀의 편지</title>
+    <style>
+        body {
+            margin: 0;
+            background: #fff5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Apple SD Gothic Neo', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 메인 컨테이너 */
+        .mailbox-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px; /* 이미지 크기에 맞게 조절 */
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* 배경 이미지 (소녀와 우체통) */
+        .mailbox-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        /* ✉️ 우체통 입구 클릭 영역 (POST 글자 부근으로 정밀 조정) */
+        .click-area {
+            position: absolute;
+            top: 31%; /* 위에서 31% 지점 */
+            left: 28%; /* 왼쪽에서 28% 지점 */
+            width: 130px;
+            height: 90px;
+            cursor: pointer;
+            z-index: 20;
+            /* background: rgba(255,0,0,0.3); // 위치 확인이 필요하면 앞의 주석(/*)을 지우세요 */
+        }
+
+        /* 📜 편지지 스타일 */
+        .letter {
+            position: absolute;
+            top: 35%;
+            left: 28%;
+            width: 160px;
+            height: 220px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(214, 51, 108, 0.3);
+            z-index: 5;
+            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1); /* 튕기는 듯한 효과 */
+            border: 2px solid #ffdeeb;
+            border-radius: 15px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .letter h3 { font-size: 16px; margin: 0 0 15px 0; color: #d6336c; text-align: center; }
+        .letter p { font-size: 13px; line-height: 1.7; margin: 0; color: #333; }
+
+        /* ✨ 클릭 시 편지가 나타나는 애니메이션 ✨ */
+        .mailbox-container.open .letter {
+            transform: translate(-10%, -40%) scale(1.8);
+            opacity: 1;
+            visibility: visible;
+            z-index: 30;
+        }
+
+        /* 🌸 떨어지는 벚꽃 잎 */
+        .cherry-blossom {
+            position: absolute;
+            background: #ffb7c5;
+            border-radius: 50% 0 50% 50%;
+            top: -10px;
+            opacity: 0.9;
+            animation: fall-and-shake linear forwards;
+            z-index: 5;
+        }
+
+        @keyframes fall-and-shake {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* 바닥 꽃잎 효과 */
+        .petals-on-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 183, 197, 0.4));
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            z-index: 1;
+        }
+
+        .mailbox-container.open ~ .petals-on-ground {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mailbox-container" id="mailbox">
+        <img src="image_f2c21d.jpg" class="mailbox-img" alt="벚꽃 소녀">
+        
+        <div class="click-area" onclick="toggleLetter()"></div>
+
+        <div class="letter" id="letter">
+            <h3>To. 소중한 너에게 🌸</h3>
+            <p>
+                벚꽃이 흩날리는 오늘,<br>
+                너의 생일을 진심으로 축하해!<br><br>
+                이 예쁜 정원의 풍경처럼<br>
+                너의 앞날도 언제나<br>
+                화사하고 행복하길 바랄게.<br><br>
+                맛있는 거 많이 먹고<br>
+                세상에서 가장 행복한 하루 보내!<br><br>
+                사랑해! ❤️
+            </p>
+        </div>
+    </div>
+
+    <div class="petals-on-ground"></div>
+
+    <script>
+        function toggleLetter() {
+            const container = document.getElementById('mailbox');
+            container.classList.toggle('open');
+            
+            if(container.classList.contains('open')) {
+                // 꽃잎 효과 생성
+                for(let i=0; i<50; i++) {
+                    setTimeout(createCherryBlossom, i * 120);
+                }
+            }
+        }
+
+        function createCherryBlossom() {
+            const petal = document.createElement('div');
+            petal.classList.add('cherry-blossom');
+            const size = Math.random() * 8 + 6 + 'px';
+            petal.style.width = size;
+            petal.style.height = size;
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.opacity = Math.random() * 0.4 + 0.6;
+            petal.style.animationDuration = Math.random() * 3 + 4 + 's';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 7000);
+        }
+    </script>
+</body>
+</html>
+  
