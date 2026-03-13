@@ -2,159 +2,95 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>벚꽃 소녀의 편지</title>
+    <title>벚꽃 소녀의 편지함</title>
     <style>
-        body {
-            margin: 0;
-            background: #fff5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Apple SD Gothic Neo', sans-serif;
-            overflow: hidden;
-            position: relative;
-        }
+        body { margin: 0; background: #fff5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Apple SD Gothic Neo', sans-serif; overflow: hidden; position: relative; }
+        .mailbox-container { position: relative; width: 100%; max-width: 500px; height: 80vh; display: flex; justify-content: center; align-items: center; z-index: 10; }
+        .mailbox-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+        
+        /* 우체통 클릭 영역 */
+        .click-area { position: absolute; top: 31%; left: 28%; width: 130px; height: 90px; cursor: pointer; z-index: 20; }
 
-        .mailbox-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: 80vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .mailbox-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            pointer-events: none;
-        }
-
-        /* ✉️ 우체통 입구 클릭 영역 */
-        .click-area {
-            position: absolute;
-            top: 31%; 
-            left: 28%;
-            width: 130px;
-            height: 90px;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        /* 📜 편지지 스타일 */
+        /* 편지지 스타일 */
         .letter {
             position: absolute;
-            top: 35%;
-            left: 28%;
-            width: 160px;
-            height: 220px;
-            background: rgba(255, 255, 255, 0.98);
-            padding: 20px;
-            box-shadow: 0 8px 25px rgba(214, 51, 108, 0.3);
-            z-index: 5;
-            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 2px solid #ffdeeb;
-            border-radius: 15px;
-            overflow-y: auto;
-            box-sizing: border-box;
-            opacity: 0;
-            visibility: hidden;
+            top: 35%; left: 28%; width: 180px; height: 250px;
+            background: white; padding: 25px;
+            box-shadow: 0 10px 30px rgba(214, 51, 108, 0.2);
+            z-index: 5; border: 2px solid #ffdeeb; border-radius: 15px;
+            box-sizing: border-box; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0; visibility: hidden; transform: translate(-10%, -20%) scale(0.5);
         }
 
-        .letter h3 { font-size: 16px; margin: 0 0 15px 0; color: #d6336c; text-align: center; }
-        .letter p { font-size: 13px; line-height: 1.7; margin: 0; color: #333; }
+        /* 편지가 활성화되었을 때 */
+        .letter.active { opacity: 1; visibility: visible; transform: translate(-10%, -40%) scale(1.6); z-index: 30; }
 
-        .mailbox-container.open .letter {
-            transform: translate(-10%, -40%) scale(1.8);
-            opacity: 1;
-            visibility: visible;
-            z-index: 30;
-        }
+        .letter h3 { font-size: 15px; margin: 0 0 10px 0; color: #d6336c; border-bottom: 1px solid #ffdeeb; padding-bottom: 5px; }
+        .letter p { font-size: 12px; line-height: 1.6; margin: 0; color: #444; word-break: keep-all; }
+        .page-num { font-size: 10px; color: #aaa; position: absolute; bottom: 10px; right: 15px; }
 
-        /* 🌸 떨어지는 벚꽃 효과 */
-        .cherry-blossom {
-            position: absolute;
-            background: #ffb7c5;
-            border-radius: 50% 0 50% 50%;
-            top: -10px;
-            opacity: 0.9;
-            animation: fall-and-shake linear forwards;
-            z-index: 5;
-        }
-
-        @keyframes fall-and-shake {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(110vh) rotate(360deg); }
-        }
-
-        .petals-on-ground {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background: linear-gradient(to bottom, transparent, rgba(255, 183, 197, 0.4));
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
-            z-index: 1;
-        }
-
-        .mailbox-container.open ~ .petals-on-ground {
-            opacity: 1;
-        }
+        /* 🌸 벚꽃 잎 */
+        .cherry-blossom { position: absolute; background: #ffb7c5; border-radius: 50% 0 50% 50%; top: -10px; pointer-events: none; animation: fall linear forwards; z-index: 5; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
     </style>
 </head>
 <body>
 
-    <div class="mailbox-container" id="mailbox">
+    <div class="mailbox-container">
         <img src="image_10.png.png" class="mailbox-img" alt="벚꽃 소녀">
-        
-        <div class="click-area" onclick="toggleLetter()"></div>
+        <div class="click-area" onclick="nextLetter()"></div>
 
-        <div class="letter" id="letter">
-            <h3>To. 소중한 너에게 🌸</h3>
-            <p>
-                벚꽃이 흩날리는 오늘,<br>
-                너의 생일을 진심으로 축하해!<br><br>
-                이 예쁜 정원의 풍경처럼<br>
-                너의 앞날도 언제나<br>
-                화사하고 행복하길 바랄게.<br><br>
-                맛있는 거 많이 먹고<br>
-                세상에서 가장 행복한 하루 보내!<br><br>
-                사랑해! ❤️
-            </p>
+        <div class="letter" id="letter0">
+            <h3>From. 철수 🌸</h3>
+            <p>생일 축하해! 오늘 하루 세상에서 가장 행복한 사람이 되길 바랄게. 맛있는 거 많이 먹어!</p>
+            <div class="page-num">1 / 3</div>
+        </div>
+
+        <div class="letter" id="letter1">
+            <h3>From. 영희 🎀</h3>
+            <p>벌써 생일이네! 항상 곁에서 응원해줘서 고마워. 우리 올해는 더 자주 보자. 축하해!</p>
+            <div class="page-num">2 / 3</div>
+        </div>
+
+        <div class="letter" id="letter2">
+            <h3>From. 민수 🎂</h3>
+            <p>태어나줘서 고맙다 친구야! 너의 앞날에 늘 좋은 일만 가득하길 빌게. 조만간 파티하자!</p>
+            <div class="page-num">3 / 3</div>
         </div>
     </div>
 
-    <div class="petals-on-ground"></div>
-
     <script>
-        function toggleLetter() {
-            const container = document.getElementById('mailbox');
-            container.classList.toggle('open');
-            
-            if(container.classList.contains('open')) {
-                for(let i=0; i<50; i++) {
-                    setTimeout(createCherryBlossom, i * 120);
-                }
+        let currentIdx = -1; // 현재 몇 번째 편지인지
+        const totalLetters = 3; // 전체 편지 개수
+
+        function nextLetter() {
+            // 이전 편지 닫기
+            if (currentIdx >= 0) {
+                document.getElementById('letter' + currentIdx).classList.remove('active');
             }
+
+            // 다음 편지 번호 계산 (마지막 편지면 다시 처음으로)
+            currentIdx = (currentIdx + 1) % totalLetters;
+
+            // 새 편지 열기
+            const nextLetter = document.getElementById('letter' + currentIdx);
+            nextLetter.classList.add('active');
+
+            // 벚꽃 효과 발사
+            createPetals();
         }
 
-        function createCherryBlossom() {
-            const petal = document.createElement('div');
-            petal.classList.add('cherry-blossom');
-            const size = Math.random() * 8 + 6 + 'px';
-            petal.style.width = size;
-            petal.style.height = size;
-            petal.style.left = Math.random() * 100 + 'vw';
-            petal.style.opacity = Math.random() * 0.4 + 0.6;
-            petal.style.animationDuration = Math.random() * 3 + 4 + 's';
-            document.body.appendChild(petal);
-            setTimeout(() => petal.remove(), 7000);
+        function createPetals() {
+            for(let i=0; i<15; i++) {
+                const p = document.createElement('div');
+                p.classList.add('cherry-blossom');
+                const size = Math.random() * 7 + 5 + 'px';
+                p.style.width = size; p.style.height = size;
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = Math.random() * 2 + 3 + 's';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 5000);
+            }
         }
     </script>
 </body>
