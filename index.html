@@ -15,14 +15,51 @@
         }
 
         .letter {
-            position: absolute; top: 35%; left: 28%; width: 180px; height: 250px;
-            background: white; padding: 25px; box-sizing: border-box;
+            position: absolute; 
+            top: 35%; 
+            left: 28%; 
+            width: 200px; /* 너비를 조금 넓혔습니다 */
+            max-height: 350px; /* 최대 높이를 제한합니다 */
+            background: white; 
+            padding: 25px; 
+            box-sizing: border-box;
             box-shadow: 0 10px 30px rgba(214, 51, 108, 0.2);
-            border: 2px solid #ffdeeb; border-radius: 15px;
+            border: 2px solid #ffdeeb; 
+            border-radius: 15px;
             transition: all 0.5s ease-in-out;
-            opacity: 0; visibility: hidden; 
+            opacity: 0; 
+            visibility: hidden; 
             transform: translate(-10%, -20%) scale(0.5);
             pointer-events: none;
+            
+            /* 💡 핵심: 내용이 많으면 내부 스크롤 생성 */
+            overflow-y: auto; 
+        }
+
+        /* 스크롤바를 예쁘게 숨기거나 얇게 만들기 */
+        .letter::-webkit-scrollbar {
+            width: 4px;
+        }
+        .letter::-webkit-scrollbar-thumb {
+            background-color: #ffdeeb;
+            border-radius: 10px;
+        }
+
+        .letter.active { 
+            opacity: 1; 
+            visibility: visible; 
+            transform: translate(-10%, -45%) scale(1.6); /* 위치를 살짝 위로 조정 */
+            z-index: 50; 
+            pointer-events: auto; /* 클릭 시 스크롤 가능하도록 수정 */
+        }
+
+        .letter p { 
+            font-size: 11px; /* 글씨 크기를 살짝 줄여 더 많이 담기게 함 */
+            line-height: 1.6; 
+            color: #444; 
+            word-break: break-all; /* 긴 문장도 잘리지 않게 함 */
+            margin-bottom: 20px;
+        }
         }
 
         .letter.active { opacity: 1; visibility: visible; transform: translate(-10%, -40%) scale(1.6); z-index: 50; }
@@ -50,13 +87,13 @@
             <p>매일 아침 눈 뜨기가 너무 힘들었는데 너를 알게 된 이후로 오히려 기다려지는것 같아 무료하던 나의 일상에 찾아와준 네게 고마워 자면서 듣는 경우가 대부분이지만
                항상 기분 좋은 꿈을 꾸는 나를 보면, 잠든 와중에도 네 목소릴 들으며 행복함을 느끼고 있었구나 하는 생각이 들어 오래도록 방송해 주라 예쁜 목소리 매일 매일 듣고
                 싶어ㅎ 항상 응원할게 지금껏 전하고 싶었지만 기회가 없어 담아두고 있던 마음을 네 생일을 빌려 이렇게 전해. 오늘도 좋은 하루 보내 그리고 생일 축하해.</p>
-            <div class="page-num">1 / 3</div>
+            <div class="page-num">1 / 5</div>
         </div>
 
         <div class="letter" id="letter1">
             <h3>From. 아또 🌸</h3>
             <p>리아님 생일 축하해요! 곧 생일이라고 들었는데 이렇게 축하할수 있어서 좋네요. 오늘 하루 누구보다 행복하고 즐거운 하루 보내셨으면 좋겠습니다 자주봐요!!</p>
-            <div class="page-num">2 / 3</div>
+            <div class="page-num">2 / 5</div>
         </div>
 
         <div class="letter" id="letter2">
@@ -65,14 +102,14 @@
                   리아 아직 스푼 시작한지 얼마 안됐지만 
                벌써부터 하루시작과 끝이 리아여서 너무 행복행
                앞으로 방송 열심히하장❤️🩷🧡💛💓💞💕</p>
-            <div class="page-num">3 / 3</div>
+            <div class="page-num">3 / 5</div>
         </div>
     </div>
 
     <div class="letter" id="letter3">
             <h3>From. 나타 🌸</h3>
             <p>생일 축하합니다 태어나주셔서 감사합니다 앞으로도 무한한 포옹</p>
-            <div class="page-num">4 / 4</div>
+            <div class="page-num">4 / 5</div>
         </div>
     </div>
 
@@ -107,7 +144,7 @@
         }
 
         let currentIdx = -1;
-        const totalLetters = 3;
+        const totalLetters = document.querySelectorAll('.letter').length;
 
         function nextLetter() {
             // 첫 클릭 시 음악 재생
